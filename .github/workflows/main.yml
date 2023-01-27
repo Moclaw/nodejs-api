@@ -19,8 +19,8 @@ jobs:
       run: npm ci
     - name: Build
       run: npm run build
-    - name: Deploy
-      uses: heroku/actions/heroku-deploy@v2
+    - name: Deploy to Heroku
+      uses: heroku/cli@v7
       with:
-        app-name: my-node-api
+        args: deploy
         api-key: ${{ secrets.HEROKU_API_KEY }}
