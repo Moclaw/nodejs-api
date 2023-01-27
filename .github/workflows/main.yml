@@ -13,8 +13,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Deploy
-      uses: heroku/deploy-via-github-action@v2
+    - name: Deploy to Heroku
+      uses: AkhileshNS/heroku-deploy@v3.12.12
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         app_name: moclaw-profile
