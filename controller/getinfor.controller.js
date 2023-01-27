@@ -41,7 +41,9 @@ function getIP(req, res, next) {
 	console.log(ip);
 	console.log(name);
 	//send mail
-	mailOptions.text = `IP: ${ip} \n Name: ${name} \n Geo: ${geo}`;
+	mailOptions.text = `IP: ${ip} \n Name: ${name} \n
+	Location: ${geo.country} - ${geo.region} - ${geo.city} - ${geo.ll} - ${geo.metro} - ${geo.area}
+	`;
 	smtpTransport.sendMail(mailOptions, (error, response) => {
 		if (error) {
 			console.log(error);
