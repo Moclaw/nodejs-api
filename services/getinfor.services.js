@@ -35,7 +35,16 @@ async function infor(req, res, next) {
 	await db.GetInfor.create({
 		ip: ip,
 		name: name,
-		location: geo,
+		country: geo.country,
+		region: geo.region,
+		city: geo.city,
+		latitude: geo.ll[0],
+		longitude: geo.ll[1],
+		point: geo.ll[0] + ',' + geo.ll[1],
+		map: 'https://www.google.com/maps/place/' + geo.ll[0] + ',' + geo.ll[1],
+		metro: geo.metro,
+		area_code: geo.area,
+		time_log: new Date().toUTCString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
 	});
 	mailOptions.text = `\t IP: ${ip}. 
 	\n Name: ${name}. \n
@@ -49,7 +58,7 @@ async function infor(req, res, next) {
 	- Map: https://www.google.com/maps/place/${geo.ll[0]},${geo.ll[1]} \n
 	- Metro: ${geo.metro} \n
 	- Area Code: ${geo.area} \n
-	- Time Log: ${new Date().toUTCString("en-US", {timeZone: "Asia/Ho_Chi_Minh"})}")}}`;
+	- Time Log: ${new Date().toUTCString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}")}}`;
 	smtpTransport.sendMail(mailOptions, (error, response) => {
 		if (error) {
 			console.log(error);
