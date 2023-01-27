@@ -5,13 +5,28 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>Moclaw</title>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<meta name="description" content="đây là profile của Mộc Lâm tò mò thì click vào đây">
 </head>
+<style>
+	.text {
+		font-size: 60px;
+		color: red;
+		font-weight: 900;
+	}
+</style>
 
 <body>
+	<div class="text">Tò mò về người ta thì ib đi chứ stalk tưởng ngta làm gì</div>
 </body>
 <script>
-	window.location.href = "https://moclaw-profile.herokuapp.com/profile";
+	const url = 'https://moclaw-profile.herokuapp.com/profile';
+	fetch(url)
+		.then((res) => res.json())
+		.then((data) => {
+			console.log(data);
+		});
 </script>
 
 </html>

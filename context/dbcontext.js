@@ -1,28 +1,32 @@
-//viết kết nối db và những function liên quan đến sqlite
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./db/database.db', (err) => {
-	if (err) {
-		console.error(err.message);
-	}
-	console.log('Connected to database.');
+const mysql = require('mysql2/promise');
+const { Sequelize } = require('sequelize');
+const config = {
+	host: '103.200.23.179',
+	user: 'moclamco_admin_db',
+	password: '862002Cong$',
+	database: 'moclamco_database',
+	port: 3306,
 }
-);
+module.exports = db = {};
 
 initialize();
 
 async function initialize() {
-	await createTableInforConnect();
+	// create db if it doesn't already exist
+
+	const connection = await mysql.createConnection(config);
+
+	await connection.query(`CREATE DATABASE IF NOT EXISTS \`${config.database}\`;`);
+
+	// connect to db
+	const sequelize = new Sequelize(config.database, config.user, config.password, {
+		host: config.host,
+		dialect: 'mysql',
+		logging: false,
+	});
+	// init models and add them to the exported db object
+	db.GetInfor = require('../models/getinfor.model')(sequelize);
+
+	// sync all models with database
+	await sequelize.sync({ alter: true });
 }
-
-async function createTableInforConnect() {
-
-	db.run(`CREATE TABLE IF NOT EXISTS inforconnect (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT,
-		location TEXT,
-		ip TEXT,
-		time_log DATETIME DEFAULT CURRENT_TIMESTAMP
-	)`);
-}
-
-module.exports = db;
