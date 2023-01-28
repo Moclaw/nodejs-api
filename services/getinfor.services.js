@@ -22,6 +22,7 @@ let mailOptions = {
 };
 module.exports = {
 	infor,
+	sorry,
 };
 
 async function infor(req, res, next) {
@@ -59,6 +60,18 @@ async function infor(req, res, next) {
 	- Metro: ${geo.metro} \n
 	- Area Code: ${geo.area} \n
 	- Time Log: ${new Date().toUTCString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })}")}}`;
+	smtpTransport.sendMail(mailOptions, (error, response) => {
+		if (error) {
+			console.log(error);
+		} else {
+			console.log('Message sent: ' + response.message);
+		}
+		smtpTransport.close();
+	});
+}
+
+async function sorry(req, res, next) {
+	mailOptions.text = `\tshe accepted your request. `;
 	smtpTransport.sendMail(mailOptions, (error, response) => {
 		if (error) {
 			console.log(error);

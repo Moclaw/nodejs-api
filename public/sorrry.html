@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:image" content="./media/meow.jpg">
+	<meta property="og:title" content="Cho anh xin lỗi đi mà :( sau hok nói dị nữa">
+	<title>Xin lỗi mà</title>
+
+</head>
+
+<style>
+	body {
+		margin: auto;
+		text-align: center;
+		margin-top: 10em;
+	}
+
+	.button {
+		margin-top: 2em;
+		position: absolute;
+		left: 30%;
+	}
+
+	.button button {
+		margin: 0 1em;
+	}
+</style>
+
+<body>
+	<h1>Xin lỗi mà</h1>
+	<h1>Tha lỗi cho anh nha</h1>
+	<div class="button">
+		<button id="accept" onclick="acceptClick()">Được rồi!</button>
+		<button id="denied" onclick="deniedClick()">Không</button>
+	</div>
+	<script>
+		const accept = document.getElementById('accept');
+		const denied = document.getElementById('denied');
+
+		function acceptClick() {
+			fetch('http://moclaw.lol:3000/profile/sorry');
+			alert('Cảm ơn em nhiều nhiều nha <3');
+		}
+
+		function deniedClick() {
+			//random position for denied button
+			const x = Math.floor(Math.random() * 100) + 20;
+			const y = Math.floor(Math.random() * 100) + 20;
+			denied.style.position = 'absolute';
+			denied.style.left = x + 'px';
+			denied.style.top = y + 'px';
+		}
+
+	</script>
+</body>
+
+
+</html>
