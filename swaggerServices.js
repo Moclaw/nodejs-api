@@ -3,6 +3,7 @@ const path = require('path');
 const swaggerDocument = require('./swagger.json');
 const expressListEndpoints = require('express-list-endpoints');
 
+const URL = process.env.URL || 'http://localhost:';
 const updateSwaggerDocument = () => {
 	const swaggerOptions = {
 		swaggerDefinition: {
@@ -14,7 +15,7 @@ const updateSwaggerDocument = () => {
 					name: 'Moc Lam Developer'
 				},
 				servers: [{
-					url: 'http://localhost:4000'
+					url: URL
 				}]
 			},
 			tags: [],
@@ -23,7 +24,11 @@ const updateSwaggerDocument = () => {
 			},
 			paths: {}
 		},
-		apis: []
+		apis: [],
+		security: [{
+			JWT: []
+		}]
+
 	};
 
 	glob.sync('./routes/*.js').forEach(file => {
@@ -41,27 +46,98 @@ const updateSwaggerDocument = () => {
 		const routes = expressListEndpoints(router);
 		routes.forEach(route => {
 			const method = route.methods[0].toLowerCase();
-			const path = route.path.replace(/:(\w+)/g, '{$1}');
+			const pathName = route.path.replace(/:(\w+)/g, '{$1}');
+			const path = '/' + routerName + pathName;
 
 			if (!swaggerOptions.swaggerDefinition.paths[path]) {
 				swaggerOptions.swaggerDefinition.paths[path] = {};
 			}
 
 			swaggerOptions.swaggerDefinition.paths[path][method] = {
-				summary: '',
 				tags: [routerName],
-				description: '',
-				produces: ['application/json'],
+				summary: route.description,
+				parameters: [],
 				responses: {
-					'200': {
+					200: {
 						description: 'OK'
+					},
+					400: {
+						description: 'Bad Request'
+					},
+					401: {
+						description: 'Unauthorized'
+					},
+					403: {
+						description: 'Forbidden'
+					},
+					404: {
+						description: 'Not Found'
+					},
+					500: {
+						description: 'Internal Server Error'
 					}
 				}
 			};
+
+			if (route.middlewares.length > 0) {
+				route.middlewares.forEach(middleware => {
+					if (middleware.name === 'authenticate') {
+						swaggerOptions.swaggerDefinition.paths[path][method].security = [{
+							JWT: []
+						}];
+					}
+				});
+			}
+
+			if (route?.parameters?.length > 0) {
+				route.parameters.forEach(parameter => {
+					swaggerOptions.swaggerDefinition.paths[path][method].parameters.push({
+						name: parameter.name,
+						in: parameter.in,
+						required: parameter.required,
+						description: parameter.description,
+						schema: {
+							type: parameter.type
+						}
+					});
+				});
+			}
+
+			if (route?.responses?.length > 0) {
+				route.responses.forEach(response => {
+					swaggerOptions.swaggerDefinition.paths[path][method].responses[response.code] = {
+						description: response.description
+					};
+				});
+			}
+
+			if (route.requestBody) {
+				swaggerOptions.swaggerDefinition.paths[path][method].requestBody = {
+					content: {
+						'application/json': {
+							schema: {
+								$ref: '#/components/schemas/' + route.requestBody
+							}
+						}
+					}
+				};
+			}
+
+
+
 		});
+
+		swaggerOptions.swaggerDefinition.components.securitySchemes = {
+			cookieAuth: {
+				type: 'apiKey',
+				in: 'header',
+				name: 'Authorization',
+				description: '',
+			}
+		};
 	});
 
-	glob.sync('./models/*.js').forEach(file => {
+	glob.sync('./models/postmodel/*.js').forEach(file => {
 		const model = require(path.resolve(file));
 		const modelName = path.basename(file, '.js');
 		swaggerOptions.swaggerDefinition.components.schemas[modelName] = {
@@ -78,13 +154,14 @@ const updateSwaggerDocument = () => {
 		}
 	});
 
-	// ghi đè lên file swagger.json
 	swaggerDocument.openapi = swaggerOptions.swaggerDefinition.openapi;
 	swaggerDocument.info = swaggerOptions.swaggerDefinition.info;
 	swaggerDocument.tags = swaggerOptions.swaggerDefinition.tags;
 	swaggerDocument.components = swaggerOptions.swaggerDefinition.components;
 	swaggerDocument.paths = swaggerOptions.swaggerDefinition.paths;
 	swaggerDocument.apis = swaggerOptions.apis;
+	swaggerDocument.security = swaggerOptions.security;
+
 };
 
 module.exports = { updateSwaggerDocument };

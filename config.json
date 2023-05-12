@@ -1,0 +1,9 @@
+{
+	"database": {
+		"host": "localhost",
+		"database": "project-x",
+		"user": "root",
+		"password": "1qaz@WSX",
+		"port": 3306
+	}
+}
