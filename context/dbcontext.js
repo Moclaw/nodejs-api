@@ -19,15 +19,13 @@ async function initialize() {
 	db.Chat = require('../models/chat')(sequelize);
 	db.LoginHistory = require('../models/login-history')(sequelize);
 	db.Roles = require('../models/roles')(sequelize);
-	db.UserRole = require('../models/user-role')(sequelize)
 
 	// define relationships
 	db.Users.hasMany(db.Chat, { foreignKey: 'user_id' });
 	db.Chat.belongsTo(db.Users, { foreignKey: 'user_id' });
 	db.LoginHistory.belongsTo(db.Users, { foreignKey: 'user_id' });
-	db.UserRole.belongsTo(db.Users, { foreignKey: 'user_id' })
-	db.Roles.hasMany(db.UserRole, { foreignKey: 'role_id' })
-
+	db.Users.hasMany(db.LoginHistory, { foreignKey: 'user_id' });
+	db.Users.belongsTo(db.Roles, { foreignKey: 'role_id' });
 	// sync all models with database
-	await sequelize.sync({ alter: true });
+	await sequelize.sync();
 }

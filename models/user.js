@@ -6,11 +6,11 @@ function model(sequelize) {
 	const attributes = {
 		first_name: { type: DataTypes.STRING, allowNull: true },
 		last_name: { type: DataTypes.STRING, allowNull: true },
-		user_name: { type: DataTypes.STRING, allowNull: false },
+		username: { type: DataTypes.STRING, allowNull: false },
 		password: { type: DataTypes.STRING, allowNull: false },
 		email: { type: DataTypes.STRING, allowNull: true },
 		phone: { type: DataTypes.STRING, allowNull: true },
-		role: { type: DataTypes.STRING, allowNull: false, defaultValue: 'user' },
+		role_id: { type: DataTypes.INTEGER, allowNull: false },
 		deleted_at: { type: DataTypes.DATE, allowNull: true },
 		created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
 		is_disabled: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },

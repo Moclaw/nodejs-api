@@ -5,5 +5,13 @@
 		"user": "root",
 		"password": "1qaz@WSX",
 		"port": 3306
+	},
+	"server": {
+		"port": 4000,
+		"url": "http://localhost:4000"
+	},
+	"Jwt": {
+		"secret": "adhuhqi1892HabdmLWqsd",
+		"expiresIn": "8h"
 	}
 }

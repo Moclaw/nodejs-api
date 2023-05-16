@@ -1,9 +1,10 @@
 const glob = require('glob');
 const path = require('path');
-const swaggerDocument = require('./swagger.json');
 const expressListEndpoints = require('express-list-endpoints');
+const config = require('./config.json');
+const swaggerDocument = require('./swagger.json');
 
-const URL = process.env.URL || 'http://localhost:';
+const URL = config.server.url;
 const updateSwaggerDocument = () => {
 	const swaggerOptions = {
 		swaggerDefinition: {
@@ -154,14 +155,23 @@ const updateSwaggerDocument = () => {
 		}
 	});
 
-	swaggerDocument.openapi = swaggerOptions.swaggerDefinition.openapi;
-	swaggerDocument.info = swaggerOptions.swaggerDefinition.info;
-	swaggerDocument.tags = swaggerOptions.swaggerDefinition.tags;
+	swaggerOptions.swaggerDefinition.components.schemas['Error'] = {
+		type: 'object',
+		properties: {
+			message: {
+				type: 'string'
+			},
+			stack: {
+				type: 'string'
+			}
+		}
+
+	};
+
 	swaggerDocument.components = swaggerOptions.swaggerDefinition.components;
 	swaggerDocument.paths = swaggerOptions.swaggerDefinition.paths;
-	swaggerDocument.apis = swaggerOptions.apis;
+	swaggerDocument.tags = swaggerOptions.swaggerDefinition.tags;
 	swaggerDocument.security = swaggerOptions.security;
-
 };
 
 module.exports = { updateSwaggerDocument };

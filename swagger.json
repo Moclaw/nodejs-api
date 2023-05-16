@@ -1,31 +1,132 @@
 {
-	"openapi": "3.0.0",
-	"info": {
-		"title": "Nodejs API",
-		"description": "Pet project for learning Nodejs",
-		"contact": {
-			"name": "Moc Lam Developer"
-		},
-		"servers": [
-			{
-				"url": "http://localhost:4000"
-			}
-		]
-	},
-	"tags": [
-		{
-			"name": "user"
-		},
-		{
-			"name": "chat"
-		}
-	],
-	"components": {
-		"schemas": {}
-	},
-	"paths": {},
-	"apis": [
-		"./routes/user.js",
-		"./routes/chat.js"
-	]
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nodejs API",
+    "description": "Pet project for learning Nodejs",
+    "contact": {
+      "name": "Moc Lam Developer"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:4000"
+      }
+    ]
+  },
+  "tags": [
+    {
+      "name": "user"
+    },
+    {
+      "name": "chat"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "stack": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": ""
+      }
+    }
+  },
+  "paths": {
+    "/user/": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/userroles": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/chat/create": {
+      "post": {
+        "tags": [
+          "chat"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
 }
