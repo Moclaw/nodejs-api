@@ -28,16 +28,18 @@ class userRepository extends baseRepository {
 	async getAllRoles() {
 		return await db.Roles.findAll();
 	}
-	async authenticate({ username, password }) {
+	async authenticate({ username, password, ip }) {
 		const user = await db.Users.findOne({ where: { username } });
 		if (!user || !(await Utils.isPasswordMatch(password, user.password)))
 			throw 'Username or password is incorrect';
-
-		const token = await Utils.generateJwtToken(user);
 		const result = {
 			...user.get(),
-			token
+			token: await Utils.generateJwtToken(user),
 		};
+
+		db.LoginHistory.create({ user_id: user.id, ip_address: ip });
+
+
 		return result;
 	}
 
@@ -60,6 +62,15 @@ class userRepository extends baseRepository {
 			token: await Utils.generateJwtToken(user)
 		};
 		return result;
+	}
+
+	async logout({ user_id }) {
+		const user = await db.Users.findOne({ where: { id: user_id } });
+		if (!user)
+			throw 'User not found';
+		db.LoginHistory.update({ is_disabled: true }, { where: { user_id: user_id } });
+		user.refresh_token = null;
+		await user.save();
 	}
 
 }

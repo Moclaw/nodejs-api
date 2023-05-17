@@ -7,7 +7,6 @@ function model(sequelize) {
 		user_id: { type: DataTypes.INTEGER, allowNull: false },
 		login_time: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
 		ip_address: { type: DataTypes.STRING, allowNull: false },
-		created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
 		is_disabled: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
 	};
 

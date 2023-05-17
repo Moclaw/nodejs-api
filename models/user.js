@@ -14,6 +14,7 @@ function model(sequelize) {
 		deleted_at: { type: DataTypes.DATE, allowNull: true },
 		created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
 		is_disabled: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+		refresh_token: { type: DataTypes.STRING, allowNull: true },
 	};
 
 	const options = {

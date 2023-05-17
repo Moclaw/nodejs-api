@@ -5,11 +5,18 @@ const Joi = require('joi');
 const validateRequest = require('../utils/validate-request');
 const authorize = require('../utils/authorize');
 const DefaultResponse = require('../utils/default');
+
+
 // routes user
 router.get('/', authorize(), getAll);
 router.get('/current', authorize(), getCurrent);
+router.get('/:id', authorize(), getById);
+router.put('/:id', authorize(), update);
+router.delete('/:id', authorize(), _delete);
 router.post('/register', registerSchema, register);
 router.post('/login', loginSchema, login);
+router.post('/logout', authorize(), logout);
+
 
 // routes roles
 router.get('/roles', authorize(), getAllRoles);
@@ -64,12 +71,14 @@ function loginSchema(req, res, next) {
 
 function login(req, res, next) {
 	const { username, password } = req.body;
+	const ip = req.ip;
 	const userRepository = new UserRepository();
-	userRepository.authenticate({ username, password }).then(user => {
+	userRepository.authenticate({ username, password, ip }).then(user => {
 		if (user.deleted_at == null) {
 			delete user.deleted_at;
 		}
 		delete user.role_id;
+
 		res.json(new DefaultResponse(user, 'Success'));
 	})
 		.catch(next);
@@ -87,6 +96,40 @@ function getCurrent(req, res, next) {
 	})
 		.catch(next);
 }
+
+function getById(req, res, next) {
+	const userRepository = new UserRepository();
+	userRepository.getById(req.params.id)
+		.then(user => res.json(new DefaultResponse(user, 'Success')))
+		.catch(next);
+}
+
+function update(req, res, next) {
+	const userRepository = new UserRepository();
+	const result = req.body;
+	if (result.password) {
+		delete result.password;
+	}
+	userRepository.update(req.params.id, result)
+		.then(user => res.json(new DefaultResponse(user, 'Success')))
+		.catch(next);
+}
+
+function _delete(req, res, next) {
+	const userRepository = new UserRepository();
+	userRepository.delete(req.params.id)
+		.then(() => res.json(new DefaultResponse(null, 'Success')))
+		.catch(next);
+}
+
+function logout(req, res, next) {
+	const userRepository = new UserRepository();
+	userRepository.logout(req.user.id)
+		.then(() => res.json(new DefaultResponse(null, 'Success')))
+		.catch(next);
+}
+
+
 
 
 

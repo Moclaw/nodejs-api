@@ -16,16 +16,25 @@ async function initialize() {
 	const sequelize = new Sequelize(database, user, password, { dialect: 'mysql' });
 	// init models and add them to the exported db object
 	db.Users = require('../models/user')(sequelize);
-	db.Chat = require('../models/chat')(sequelize);
 	db.LoginHistory = require('../models/login-history')(sequelize);
 	db.Roles = require('../models/roles')(sequelize);
-
+	db.Conversations = require('../models/conversations')(sequelize);
+	db.Messages = require('../models/messages')(sequelize);
 	// define relationships
-	db.Users.hasMany(db.Chat, { foreignKey: 'user_id' });
-	db.Chat.belongsTo(db.Users, { foreignKey: 'user_id' });
 	db.LoginHistory.belongsTo(db.Users, { foreignKey: 'user_id' });
+
 	db.Users.hasMany(db.LoginHistory, { foreignKey: 'user_id' });
 	db.Users.belongsTo(db.Roles, { foreignKey: 'role_id' });
+
+	db.Messages.belongsTo(db.Conversations, { foreignKey: 'conversation_id' });
+	db.Messages.hasMany(db.Users, { foreignKey: 'sender_id' });
+	db.Messages.hasMany(db.Users, { foreignKey: 'receiver_id' });
+
+	db.Conversations.hasMany(db.Messages, { foreignKey: 'conversation_id' });
+	db.Conversations.belongsTo(db.Users, { foreignKey: 'user_id' });
+
+
+
 	// sync all models with database
-	await sequelize.sync();
+	await sequelize.sync({ alter: true });
 }
